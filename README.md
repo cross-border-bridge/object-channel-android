@@ -13,7 +13,7 @@ ObjectChannelのAndroid用の実装を提供します。
 ### gradle
 ```
 dependencies {
-	compile 'jp.co.dwango.cbb:object-channel:2.0.0'
+	compile 'jp.co.dwango.cbb:object-channel:2.0.1'
 }
 ```
 

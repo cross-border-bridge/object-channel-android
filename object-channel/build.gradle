@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.novoda.bintray-release'
-def pomVersion = "2.0.0"
+def pomVersion = "2.0.1"
 
 buildscript {
     repositories {
@@ -38,7 +38,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'jp.co.dwango.cbb:function-channel:2.0.0'
+    compile 'jp.co.dwango.cbb:function-channel:2.0.1'
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.9.5'
     testCompile 'org.json:json:20140107'
