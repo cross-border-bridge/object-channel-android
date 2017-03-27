@@ -6,6 +6,7 @@ import jp.co.dwango.cbb.fc.AsyncResult;
 import jp.co.dwango.cbb.fc.CrossBorderMethod;
 
 public class MyClassJava implements CrossBorderInterface {
+	private final Object locker = new Object();
 	boolean destroyed = false;
 	String argument;
 	String[] arguments;
@@ -43,6 +44,13 @@ public class MyClassJava implements CrossBorderInterface {
 	@CrossBorderMethod
 	public void countUp() {
 		count++;
+	}
+
+	@CrossBorderMethod
+	public void threadSafeCountUp() {
+		synchronized (locker) {
+			count++;
+		}
 	}
 
 	@CrossBorderMethod

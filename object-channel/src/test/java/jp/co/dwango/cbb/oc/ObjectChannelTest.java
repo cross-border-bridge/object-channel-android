@@ -29,6 +29,7 @@ public class ObjectChannelTest {
 	private ObjectChannel objectChannel2;
 	private RemoteObject remoteObject;
 	private List<RemoteObject> remoteObjects = new ArrayList<RemoteObject>();
+	private int counter;
 
 	@Before
 	public void setUp() {
@@ -371,6 +372,93 @@ public class ObjectChannelTest {
 			}
 		});
 		remoteObject.destroy();
+
+		after();
+	}
+
+	private synchronized void countUp() {
+		counter++;
+	}
+
+	@Test
+	public void test_正常系_マルチスレッドでの検証1_ライフサイクル() throws InterruptedException {
+		before();
+		final int tryCount = 1000;
+		final int threadCount = 10;
+		counter = 0;
+
+		Thread[] threads = new Thread[threadCount];
+		for (int i = 0; i < threadCount; i++) {
+			threads[i] = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for (int i = 0; i < tryCount; i++) {
+						objectChannel1.create("MyClassJava", null, new RemoteObjectHandler() {
+							@Override
+							public void onResult(final @Nullable RemoteObject object) {
+								Assert.assertNotNull(object);
+								object.invoke("getCount", null, new RemoteObjectResultHandler() {
+									@Override
+									public void onResult(@Nullable Object result) {
+										if (null != result) {
+											object.destroy();
+											countUp();
+										}
+									}
+								});
+							}
+						});
+					}
+				}
+			});
+			threads[i].start();
+		}
+		for (Thread t : threads) {
+			t.join();
+		}
+
+		Assert.assertEquals(threadCount * tryCount, counter);
+		after();
+	}
+
+	@Test
+	public void test_正常系_マルチスレッドでの検証2_オブジェクト操作() throws InterruptedException {
+		before();
+		final int tryCount = 1000;
+		final int threadCount = 10;
+		counter = 0;
+
+		objectChannel1.create("MyClassJava", null, new RemoteObjectHandler() {
+			@Override
+			public void onResult(final @Nullable RemoteObject object) {
+				Assert.assertNotNull(object);
+				remoteObject = object;
+			}
+		});
+
+		Thread[] threads = new Thread[threadCount];
+		for (int i = 0; i < threadCount; i++) {
+			threads[i] = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for (int i = 0; i < tryCount; i++) {
+						remoteObject.invoke("threadSafeCountUp", null);
+					}
+				}
+			});
+			threads[i].start();
+		}
+
+		for (Thread t : threads) {
+			t.join();
+		}
+
+		remoteObject.invoke("getCount", null, new RemoteObjectResultHandler() {
+			@Override
+			public void onResult(@Nullable Object result) {
+				Assert.assertEquals(threadCount * tryCount, result);
+			}
+		});
 
 		after();
 	}
