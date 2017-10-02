@@ -1,5 +1,12 @@
 # Change log
 
+## Version 2.0.4
+- 依存する Gradle のバージョンを更新
+- FunctionChannelを2.0.4に更新
+- テストプログラムの不具合を修正
+  - 実機で動作できるようにする (WebViewDataBusのインジェクション方式を自動から手動に変更)
+  - `MyClassJava` のアクセススコープがpublicではないためJavaScript側からインスタンス化できない問題を修正
+
 ## Version 2.0.3
 FunctionChannelをVersion 2.0.3に更新
 
