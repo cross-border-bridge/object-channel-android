@@ -8,7 +8,7 @@ import jp.co.dwango.cbb.fc.AsyncResult;
 import jp.co.dwango.cbb.fc.CrossBorderMethod;
 import jp.co.dwango.cbb.oc.CrossBorderInterface;
 
-class MyClassJava implements CrossBorderInterface {
+public class MyClassJava implements CrossBorderInterface {
 	private final String c;
 
 	// constructorはアノテーションを付けなくてもよい（そもそも付けられない）
